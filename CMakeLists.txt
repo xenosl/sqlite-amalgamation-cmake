@@ -44,6 +44,8 @@ target_include_directories(sqlite3-shell
         PRIVATE ${sqlite3_SOURCE_DIR})
 target_link_libraries(sqlite3-shell
         PRIVATE sqlite3-static)
+set_target_properties(sqlite3-shell
+        PROPERTIES RUNTIME_OUTPUT_NAME sqlite3)
 add_dependencies(sqlite3-shell sqlite3-static)
 
 file(STRINGS ${sqlite3_SOURCE_DIR}/sqlite3.h _VER_LINE
