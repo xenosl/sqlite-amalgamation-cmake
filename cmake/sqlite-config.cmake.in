@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake")
+
+target_compile_definitions(@PROJECT_NAME@::sqlite3
+        INTERFACE "SQLITE_API=__declspec(dllimport)")
+
+check_required_components(@PROJECT_NAME@)
