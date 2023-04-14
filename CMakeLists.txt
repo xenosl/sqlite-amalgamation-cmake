@@ -23,6 +23,14 @@ add_definitions(-DSQLITE_ENABLE_STAT4)
 
 set(sqlite3_SOURCE_DIR ${CMAKE_BINARY_DIR}/src/sqlite-amalgamation-3410200)
 
+function(set_target_output_directory TARGET DIR)
+    set_target_properties(${TARGET} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${DIR}
+            LIBRARY_OUTPUT_DIRECTORY ${DIR}
+            PDB_OUTPUT_DIRECTORY ${DIR}
+            ARCHIVE_OUTPUT_DIRECTORY ${DIR})
+endfunction()
+
 add_library(sqlite3 SHARED)
 target_sources(sqlite3
         PRIVATE ${sqlite3_SOURCE_DIR}/sqlite3.c)
@@ -30,12 +38,14 @@ target_include_directories(sqlite3
         PUBLIC $<BUILD_INTERFACE:${sqlite3_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
 target_compile_definitions(sqlite3
         PRIVATE "SQLITE_API=__declspec(dllexport)")
+set_target_output_directory(sqlite3 ${CMAKE_BINARY_DIR}/sqlite3)
 
 add_library(sqlite3-static STATIC)
 target_sources(sqlite3-static
         PRIVATE ${sqlite3_SOURCE_DIR}/sqlite3.c)
 target_include_directories(sqlite3-static
         PUBLIC $<BUILD_INTERFACE:${sqlite3_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
+set_target_output_directory(sqlite3-static ${CMAKE_BINARY_DIR}/sqlite3-static)
 
 add_executable(sqlite3-shell)
 target_sources(sqlite3-shell
@@ -44,6 +54,7 @@ target_include_directories(sqlite3-shell
         PRIVATE ${sqlite3_SOURCE_DIR})
 target_link_libraries(sqlite3-shell
         PRIVATE sqlite3-static)
+set_target_output_directory(sqlite3-shell ${CMAKE_BINARY_DIR}/sqlite3-shell)
 set_target_properties(sqlite3-shell
         PROPERTIES RUNTIME_OUTPUT_NAME sqlite3)
 add_dependencies(sqlite3-shell sqlite3-static)
