@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 project(sqlite)
 
-set(sqlite_ARCHIVE sqlite.tar.gz)
+set(sqlite_ARCHIVE sqlite.zip)
 
 file(DOWNLOAD "https://sqlite.org/2023/sqlite-amalgamation-3410200.zip" ${sqlite_ARCHIVE}
         SHOW_PROGRESS
@@ -67,6 +67,7 @@ string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+"
 unset(_VER_LINE)
 set_target_properties(sqlite3 sqlite3-static sqlite3-shell
         PROPERTIES VERSION ${sqlite3_VERSION})
+message(STATUS "sqlite3 version: ${sqlite3_VERSION}")
 
 
 include(GNUInstallDirs)
