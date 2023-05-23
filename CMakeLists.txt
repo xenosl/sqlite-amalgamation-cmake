@@ -77,7 +77,7 @@ set(sqlite_INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 set(sqlite_PACKAGE_CONFIG_FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake)
 set(sqlite_PACKAGE_CONFIG_VERSION_FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake)
 
-install(TARGETS sqlite3 sqlite3-shell
+install(TARGETS sqlite3 sqlite3-static sqlite3-shell
         EXPORT ${PROJECT_NAME}
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${sqlite3_SOURCE_DIR}/sqlite3.h
