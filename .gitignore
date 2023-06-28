@@ -21,6 +21,3 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
-
-# Generated code of current project
-Generated/

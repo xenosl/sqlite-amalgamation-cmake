@@ -2,15 +2,36 @@ cmake_minimum_required(VERSION 3.11)
 
 project(sqlite)
 
-set(sqlite_ARCHIVE sqlite.zip)
+include(cmake/Utilities.cmake)
 
-file(DOWNLOAD "https://sqlite.org/2023/sqlite-amalgamation-3410200.zip" ${sqlite_ARCHIVE}
-        SHOW_PROGRESS
-        EXPECTED_HASH SHA3_256=c51ca72411b8453c64e0980be23bc9b9530bdc3ec1513e06fbf022ed0fd02463)
+# Options
+option(DOWNLOAD_SQLITE_ARCHIVE "Automatically download the sqlite3 amalgamation archive." ON)
+set(SQLITE_ARCHIVE_URL "https://sqlite.org/2023/sqlite-amalgamation-3410200.zip"
+        CACHE STRING "The url of sqlite amalgamation source archive. Only available when DOWNLOAD_SQLITE_ARCHIVE is ON")
+set(SQLITE_ARCHIVE_HASH "c51ca72411b8453c64e0980be23bc9b9530bdc3ec1513e06fbf022ed0fd02463"
+        CACHE STRING "The sha2256 hash string for the sqlite amalgamation source archive. Only available when DOWNLOAD_SQLITE_ARCHIVE is ON.")
+set(SQLITE_ARCHIVE "${PROJECT_SOURCE_DIR}/sqlite.zip"
+        CACHE STRING "Where the sqlite amalgamation source archive located. Only available when DOWNLOAD_SQLITE_ARCHIVE is OFF.")
 
+if(DOWNLOAD_SQLITE_ARCHIVE)
+    file(DOWNLOAD ${SQLITE_ARCHIVE_URL} ${SQLITE_ARCHIVE}
+            SHOW_PROGRESS
+            EXPECTED_HASH SHA3_256=${SQLITE_ARCHIVE_HASH})
+endif()
+
+if(NOT EXISTS ${SQLITE_ARCHIVE})
+    message(FATAL_ERROR "Sqlite source archive not found,
+     set DOWNLOAD_SQLITE_ARCHIVE to ON to automatically download it or put the file manually to the project source folder.")
+endif()
+
+set(SQLITE_ARCHIVE_EXTRACT_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
 file(ARCHIVE_EXTRACT
-        INPUT ${sqlite_ARCHIVE}
-        DESTINATION ${CMAKE_BINARY_DIR}/src)
+        INPUT ${SQLITE_ARCHIVE}
+        DESTINATION ${SQLITE_ARCHIVE_EXTRACT_DIR})
+find_path_recurse(sqlite3_SOURCE_DIR
+        NAMES sqlite3.h
+        PATHS ${SQLITE_ARCHIVE_EXTRACT_DIR}
+        REQUIRED)
 
 
 add_definitions(-DSQLITE_ENABLE_RTREE)
@@ -20,8 +41,6 @@ add_definitions(-DSQLITE_ENABLE_JSON1)
 add_definitions(-DSQLITE_ENABLE_RBU)
 add_definitions(-DSQLITE_ENABLE_STAT4)
 #add_definitions(-DSQLITE_THREADSAFE=0)
-
-set(sqlite3_SOURCE_DIR ${CMAKE_BINARY_DIR}/src/sqlite-amalgamation-3410200)
 
 function(set_target_output_directory TARGET DIR)
     set_target_properties(${TARGET} PROPERTIES
