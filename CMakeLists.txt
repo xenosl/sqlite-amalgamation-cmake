@@ -5,13 +5,15 @@ project(sqlite)
 include(cmake/Utilities.cmake)
 
 # Options
-option(DOWNLOAD_SQLITE_ARCHIVE "Automatically download the sqlite3 amalgamation archive." ON)
+option(DOWNLOAD_SQLITE_ARCHIVE "Whether to automatically download the sqlite3 amalgamation archive." ON)
 set(SQLITE_ARCHIVE_URL "https://sqlite.org/2023/sqlite-amalgamation-3410200.zip"
-        CACHE STRING "The url of sqlite amalgamation source archive. Only available when DOWNLOAD_SQLITE_ARCHIVE is ON")
+        CACHE STRING "The url of sqlite amalgamation source archive. Only available when DOWNLOAD_SQLITE_ARCHIVE is ON.")
 set(SQLITE_ARCHIVE_HASH "c51ca72411b8453c64e0980be23bc9b9530bdc3ec1513e06fbf022ed0fd02463"
         CACHE STRING "The sha2256 hash string for the sqlite amalgamation source archive. Only available when DOWNLOAD_SQLITE_ARCHIVE is ON.")
 set(SQLITE_ARCHIVE "${PROJECT_SOURCE_DIR}/sqlite.zip"
-        CACHE STRING "Where the sqlite amalgamation source archive located. Only available when DOWNLOAD_SQLITE_ARCHIVE is OFF.")
+        CACHE STRING "Where the sqlite amalgamation source archive located. Set the value locate an existing sqlite
+        amalgamation source archive when DOWNLOAD_SQLITE_ARCHIVE is OFF to skip download and let the project use the source
+        archive you provided, or specify where the downloaded source archive is located when DOWNLOAD_SQLITE_ARCHIVE is ON.")
 
 if(DOWNLOAD_SQLITE_ARCHIVE)
     file(DOWNLOAD ${SQLITE_ARCHIVE_URL} ${SQLITE_ARCHIVE}
